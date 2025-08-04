@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NetFlix</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Login Screen -->
+  <div class="login-screen" id="loginScreen">
+    <form class="login-form" onsubmit="return handleLogin(event)">
+      <h2>Login to TeluguFlix</h2>
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <!-- Main App Content -->
+  <div id="appContent" style="display: none;">
+    <div id="loginSuccessMessage">✅ Login was successful!</div>
+
+    <header>
+      <div class="logo">TeluguFlix</div>
+      <div class="nav">
+        <a href="#">Home</a>
+        <a href="#">Movies</a>
+        <a href="#">Cartoons</a>
+        <a href="#">Shows</a>
+      </div>
+    </header>
+
+    <!-- Content Sections -->
+    <section class="category-section">
+      <h2 class="section-title">Movies</h2>
+      <div id="moviesContainer" class="grid-container"></div>
+    </section>
+
+    <section class="category-section">
+      <h2 class="section-title">Cartoons</h2>
+      <div id="cartoonsContainer" class="grid-container"></div>
+    </section>
+
+    <section class="category-section">
+      <h2 class="section-title">Shows</h2>
+      <div id="showsContainer" class="grid-container"></div>
+    </section>
+
+    <!-- Modal -->
+    <div class="modal" id="videoModal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <iframe id="videoPlayer" src="" frameborder="0" allowfullscreen></iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const movies = [
+      {
+        title: "RRR",
+    poster: "./assets/rrr",
+    trailer: "https://www.youtube.com/embed/2_BkCz3OnlY"
+  },
+
+  {
+    title: "Kalki 2898 AD",
+    poster: "./assets/kalki",
+    trailer: "https://www.youtube.com/embed/B274eJsC64M"
+  },
+  {
+    title: "Hi Nanna",
+    poster: "./assets/hi",
+    trailer: "https://www.youtube.com/embed/pbP43eh4jV"
+  },
+  {
+    title: "Salaar",
+    poster: "./assets/salar",
+    trailer: "https://www.youtube.com/embed/NQjiHbdWQOc"
+  },
+  {
+    title: "Sita Ramam",
+    poster: "./assets/seetha",
+    trailer: "https://www.youtube.com/embed/Ljk6tGZ1l3A"
+  },
+  
+  {
+  title: "777charlie",
+    poster: "./assets/charlie",
+    trailer: "https://www.youtube.com/embed/Ljk6tGZ1l3A"
+},
+{
+  title: "Tourist family",
+    poster: "./assets/tourist family",
+    trailer: "https://www.youtube.com/embed/Ljk6tGZ1l3A"
+},
+
+{
+  
+  
+    title: "Tom & Jerry",
+    poster: "./assets/tom and jerry",
+    trailer: "https://www.youtube.com/embed/t0Q2otsqC4I"
+  },
+  {
+    title: "Doreamon",
+    poster: "./assets/doreaman",
+    trailer: "https://www.youtube.com/embed/mimoQBL0u5w"
+  },
+  {
+    title: "Shinchan",
+    poster: "./assets/shinchan",
+    trailer: "https://www.youtube.com/embed/Tr1UOeggPfI"
+  },
+  {
+    title: "Ben10",
+    poster: "./assets/benten",
+    trailer: "https://www.youtube.com/embed/obqCP8bgmKg"
+  },
+  {
+    title: "Pokemon",
+    poster: "./assets/pokemon",
+    trailer: "https://www.youtube.com/embed/3cqGoi1AHdk"
+  },
+  {
+    title: "Motu Patlu",
+    poster: "./assets/motupatlu",
+    trailer: "https://www.youtube.com/embed/UX7dht0nbFc"
+  },
+  {
+    title: "Roll No. 21",
+    poster: "./assets/21",
+    trailer: "https://www.youtube.com/embed/IuX35DWJN"
+  },
+  
+    
+{
+  
+  title: "Filmimoji",
+  poster: "./assets/fmoji",
+  trailer: "https://www.youtube.com/embed/eODvqXDTvgA"
+},
+{
+  title: "Drama Juniors",
+  poster: "./assets/dj2",
+  trailer: "https://www.youtube.com/embed/FKwyrGxe4CM"
+},
+{
+  title: "Jabardasth",
+  poster: "./assets/jabardasth",
+  trailer: "https://www.youtube.com/embed/tfpbb-pfPTE"
+},
+{
+  title: "Sarkar",
+  poster: "./assets/sarkar",
+  trailer: "https://www.youtube.com/embed/GENxwc0912Q"
+},
+
+
+];
+
+
+    const moviesContainer = document.getElementById('moviesContainer');
+    const cartoonsContainer = document.getElementById('cartoonsContainer');
+    const showsContainer = document.getElementById('showsContainer');
+
+    movies.forEach(movie => {
+      const card = document.createElement('div');
+      card.className = 'movie-card';
+      card.innerHTML = `
+        <img src="${movie.poster}" alt="${movie.title}" onerror="this.src='https://via.placeholder.com/180x270?text=No+Image';">
+        <h3>${movie.title}</h3>
+      `;
+      card.onclick = () => openModal(movie.trailer);
+
+      const title = movie.title.toLowerCase();
+      if (["tom", "jerry", "doreamon", "shinchan", "ben10", "pokemon", "motu", "roll"].some(k => title.includes(k))) {
+        cartoonsContainer.appendChild(card);
+      } else if (["jabardasth", "drama", "filmimoji", "sarkar"].some(k => title.includes(k))) {
+        showsContainer.appendChild(card);
+      } else {
+        moviesContainer.appendChild(card);
+      }
+    });
+
+    function openModal(trailerUrl) {
+      const videoPlayer = document.getElementById('videoPlayer');
+      const videoModal = document.getElementById('videoModal');
+      videoPlayer.src = trailerUrl + '?autoplay=1';
+      videoModal.style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('videoPlayer').src = '';
+      document.getElementById('videoModal').style.display = 'none';
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      if (username && password) {
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appContent').style.display = 'block';
+        document.getElementById('loginSuccessMessage').style.display = 'block';
+      } else {
+        alert("Please enter valid credentials.");
+      }
+    }
+  </script>
+</body>
+</html>
